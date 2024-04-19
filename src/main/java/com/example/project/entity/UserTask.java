@@ -1,9 +1,10 @@
 package com.example.project.entity;
 
-import com.example.project.util.TaskProblem;
 import jakarta.persistence.*;
 import lombok.Data;
-import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import java.util.UUID;
 
 /**User task group*/
@@ -18,11 +19,15 @@ public class UserTask {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private static final int GROUP_MAX_QUESTIONS = 5;
+
+    @Transient private static final int GROUP_MAX_QUESTIONS = 5;
     /**
      * Group of  questions (max - @see GROUP_MAX_QUESTIONS) <br>
-     * Question with answers and right answers
+     * Question with answers and right answers <br>
+     * In JSON
      */
-    private List<TaskProblem> problem;
+    @Column(columnDefinition = "json")
+    private String problem;
+
     @JoinColumn(referencedColumnName = "user_tasks") private long user_id;
 }
