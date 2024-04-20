@@ -1,0 +1,34 @@
+services:
+  postgres:
+    container_name: myDB_container
+    image: postgres:latest
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: "myDB"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "321"
+      PG_DATA: "/var/lib/postgresql/data/pgdata"
+    command: ["postgres", "-c", "log_statement=all"]
+    volumes:
+      - ./DockerData:/var/lib/postgresql/data/pgdata
+    networks:
+      - docker_default
+
+  spring:
+    container_name: spring
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "80:80"
+    networks:
+      - docker_default
+    depends_on:
+      - postgres
+
+networks:
+  docker_default:
+    driver: bridge

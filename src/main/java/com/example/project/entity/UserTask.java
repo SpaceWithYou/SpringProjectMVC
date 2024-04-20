@@ -1,10 +1,11 @@
 package com.example.project.entity;
 
+import com.example.project.util.TaskProblem;
+import com.example.project.util.TaskProblemConverter;
 import jakarta.persistence.*;
-import lombok.Data;
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
+import lombok.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**User task group*/
@@ -14,11 +15,11 @@ import java.util.UUID;
 )
 @Entity
 @Data
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserTask {
-    private String name;
+    private String TaskName;
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Getter private UUID id = UUID.randomUUID();
 
     @Transient private static final int GROUP_MAX_QUESTIONS = 5;
     /**
@@ -26,8 +27,38 @@ public class UserTask {
      * Question with answers and right answers <br>
      * In JSON
      */
-    @Column(columnDefinition = "json")
-    private String problem;
+    @Column(name = "problems", columnDefinition = "text")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(
+            name = "task_problems",
+            indexes = @Index(name = "idx_task", columnList = "problems")
+    )
+    @Convert(converter = TaskProblemConverter.class)
+    private List<TaskProblem> problem;
 
-    @JoinColumn(referencedColumnName = "user_tasks") private long user_id;
+    @JoinColumn(referencedColumnName = "user_tasks", name = "user_id")
+    @Column(name = "user_id")
+    private long userId;
+
+    public UserTask(String TaskName, long userId, List<TaskProblem> problem) {
+        if(TaskName.isEmpty() || userId < 0) throw new IllegalArgumentException();
+        this.TaskName = TaskName;
+        this.userId = userId;
+        this.problem = new ArrayList<>(problem);
+    }
+
+    public UserTask(String TaskName, long userId) {
+        if(TaskName.isEmpty() || userId < 0) throw new IllegalArgumentException();
+        this.TaskName = TaskName;
+        this.userId = userId;
+        this.problem = new ArrayList<>();
+    }
+
+    public void addProblemTask(TaskProblem task) {
+        if(problem.size() < GROUP_MAX_QUESTIONS) this.problem.add(task);
+    }
+
+    public void removeProblemTask(TaskProblem task) {
+        this.problem.remove(task);
+    }
 }

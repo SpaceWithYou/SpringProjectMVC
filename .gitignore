@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### My project  ###
+### Docker Volumes ###
+/DockerData
