@@ -3,6 +3,7 @@ package com.example.project;
 import com.example.project.entity.User;
 import com.example.project.entity.UserTask;
 import com.example.project.repository.UserRepository;
+import com.example.project.repository.UserTaskRepository;
 import com.example.project.util.TaskProblem;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,9 @@ import java.util.*;
 public class UserRepoTest {
     @Autowired
     UserRepository repo;
+
+    @Autowired
+    UserTaskRepository taskRepo;
 
     private static List<UserTask> list;
 
@@ -95,6 +99,7 @@ public class UserRepoTest {
 
     @Test
     void repoSaveTest() {
+        repo.deleteAll();
         User user = new User("Name", "pass", false, list);
         repo.save(user);
         assert repo.existsById(1L);
@@ -102,10 +107,13 @@ public class UserRepoTest {
 
     @Test
     void repoGetTest() {
+        repo.deleteAll();
         User user = new User("Name", "pass", true);
+        user = repo.save(user);
         user.addTask(list.get(0));
         user.addTask(list.get(2));
-        repo.save(user);
+        taskRepo.saveAll(user.getTaskList());
+
         Optional<User> optU = repo.findById(user.getId());
         assert optU.isPresent();
         User user2 = optU.get();
@@ -118,13 +126,14 @@ public class UserRepoTest {
 
     @Test
     void repoUpdateTest() {
+        repo.deleteAll();
         User user = new User("Name", "pass", true);
         repo.save(user);
         for (var task: list) {
             user.addTask(task);
         }
-        assert user.deleteTask(list.get(2));
-        assert user.getTaskList().size() == 1;
+        assert user.deleteTask(user.getTaskList().get(2));
+        assert user.getTaskList().size() == 2;
         User user2 = new User("Name2", "pass2", true);
         user2.setId(user.getId());
         user2.addTask(list.get(2));
@@ -144,13 +153,14 @@ public class UserRepoTest {
 
     @Test
     void repoDeleteTest() {
+        repo.deleteAll();
         User user = new User("Name", "pass", true);
         repo.save(user);
-        assert repo.existsById(1L);
+        assert repo.existsById(user.getId());
         repo.delete(user);
-        assert !repo.existsById(1L);
+        assert !repo.existsById(user.getId());
         repo.save(user);
-        repo.deleteById(1L);
-        assert !repo.existsById(1L);
+        repo.deleteById(user.getId());
+        assert !repo.existsById(user.getId());
     }
 }

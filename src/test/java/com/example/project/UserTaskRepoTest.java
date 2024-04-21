@@ -45,6 +45,7 @@ public class UserTaskRepoTest {
 
     @Test
     void saveTaskTest() {
+        repo.deleteAll();
         UserTask task = new UserTask("Name", 1L);
         task.addProblemTask(problemList.get(0));
         repo.save(task);
@@ -54,6 +55,7 @@ public class UserTaskRepoTest {
 
     @Test
     void getTaskTest() {
+        repo.deleteAll();
         UserTask task = new UserTask("Name",1L, problemList);
         repo.save(task);
         UUID id = task.getId();
@@ -73,6 +75,7 @@ public class UserTaskRepoTest {
 
     @Test
     void updateTaskTest() {
+        repo.deleteAll();
         UserTask task = new UserTask("Name",1L);
         task.addProblemTask(problemList.get(0));
         repo.save(task);

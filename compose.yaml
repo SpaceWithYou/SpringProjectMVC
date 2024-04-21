@@ -23,7 +23,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "80:80"
+      - "8080:8080"
     networks:
       - docker_default
     depends_on:

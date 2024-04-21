@@ -17,9 +17,9 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserTask {
-    private String TaskName;
-    @Id
-    @Getter private UUID id = UUID.randomUUID();
+    private String taskName;
+
+    @Id private UUID id = UUID.randomUUID();
 
     @Transient private static final int GROUP_MAX_QUESTIONS = 5;
     /**
@@ -42,16 +42,22 @@ public class UserTask {
 
     public UserTask(String TaskName, long userId, List<TaskProblem> problem) {
         if(TaskName.isEmpty() || userId < 0) throw new IllegalArgumentException();
-        this.TaskName = TaskName;
+        this.taskName = TaskName;
         this.userId = userId;
         this.problem = new ArrayList<>(problem);
     }
 
     public UserTask(String TaskName, long userId) {
         if(TaskName.isEmpty() || userId < 0) throw new IllegalArgumentException();
-        this.TaskName = TaskName;
+        this.taskName = TaskName;
         this.userId = userId;
         this.problem = new ArrayList<>();
+    }
+
+    public UserTask(UserTask task) {
+        this.taskName = task.getTaskName();
+        this.problem = new ArrayList<>(task.getProblem());
+        this.userId = task.getUserId();
     }
 
     public void addProblemTask(TaskProblem task) {
