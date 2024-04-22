@@ -30,6 +30,7 @@ public class User {
     private List<UserTask> taskList;
 
     public User(String name, String pass, boolean isSuperUser) {
+        if(name.isEmpty()) throw new IllegalArgumentException();
         this.name = name;
         this.password = pass;
         this.isSuperUser = isSuperUser;
@@ -37,14 +38,13 @@ public class User {
     }
 
     public User(String name, String pass, boolean isSuperUser, List<UserTask> tasks) {
+        if(name.isEmpty()) throw new IllegalArgumentException();
         this.name = name;
         this.password = pass;
         this.isSuperUser = isSuperUser;
         taskList = new ArrayList<>();
         for (UserTask task: tasks) {
-            if(task.getUserId() == this.id) {
-                taskList.add(task);
-            }
+            this.addTask(task);
         }
     }
     /**Adds new Tasks, if task have different userID, change it to current user id**/
