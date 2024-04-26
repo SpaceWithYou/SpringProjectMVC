@@ -13,10 +13,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
-@EnableWebSecurity(debug = true)
-@EnableMethodSecurity
+@EnableWebSecurity
+//@EnableMethodSecurity
 public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -40,14 +41,21 @@ public class SecurityConfig {
     //TODO disable login page
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.authorizeHttpRequests(custom ->
-                custom.requestMatchers("*/admin").hasRole("SUPER_USER")
-                .requestMatchers("*/user").hasRole("USER")
-                .requestMatchers("/**", "/index")
-                .permitAll()
-        ).formLogin(login -> login.loginPage("/login"))
-                .logout(logout -> logout.logoutSuccessUrl("/"))
+        http.authorizeHttpRequests(custom -> custom
+                        .requestMatchers("/admin").hasRole("SUPER_USER")
+                        .requestMatchers("/user").hasRole("USER")
+                        .requestMatchers("/", "/index").permitAll()
+                        .requestMatchers("/login").permitAll()
+                        .anyRequest().authenticated()
+        )
+                .formLogin(login -> login
+                        .loginPage("/login")
+                )
+                .logout(logout -> logout
+                        .logoutSuccessUrl("/")
+                )
                 .csrf(AbstractHttpConfigurer::disable);
+        http.httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }

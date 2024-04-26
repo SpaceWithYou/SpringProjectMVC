@@ -9,10 +9,10 @@ services:
       POSTGRES_DB: "myDB"
       POSTGRES_USER: "postgres"
       POSTGRES_PASSWORD: "321"
-      PG_DATA: "/var/lib/postgresql/data/pgdata"
+      PG_DATA: "/var/lib/postgresql/data"
     command: ["postgres", "-c", "log_statement=all"]
     volumes:
-      - ./DockerData:/var/lib/postgresql/data/pgdata
+      - ./DockerData:/var/lib/postgresql/data
     networks:
       - docker_default
 
