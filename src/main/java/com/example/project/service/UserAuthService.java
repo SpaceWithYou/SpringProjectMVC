@@ -22,4 +22,9 @@ public class UserAuthService implements UserDetailsService {
         if(userOpt.isEmpty()) throw new UsernameNotFoundException("User not found");
         return new com.example.project.util.UserDetails(userOpt.get());
     }
+
+    public boolean checkPassword(String userName, String password) throws UsernameNotFoundException {
+        UserDetails details = loadUserByUsername(userName);
+        return password.equals(details.getPassword());
+    }
 }

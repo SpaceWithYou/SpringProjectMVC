@@ -13,11 +13,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.web.servlet.DispatcherServlet;
 
 @Configuration
 @EnableWebSecurity
-//@EnableMethodSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -37,25 +36,24 @@ public class SecurityConfig {
         return provider;
     }
 
-    //url mappings
-    //TODO disable login page
+    /*url mappings
+    * TODO possible to use preauthorize in method*/
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(custom -> custom
-                        .requestMatchers("/admin").hasRole("SUPER_USER")
-                        .requestMatchers("/user").hasRole("USER")
-                        .requestMatchers("/", "/index").permitAll()
-                        .requestMatchers("/login").permitAll()
-                        .anyRequest().authenticated()
+                                .requestMatchers("/index", "/", "/login", "/login/auth").permitAll()
+                                .requestMatchers("/admin").hasRole("SUPER_USER")
+                                .requestMatchers("/user").hasRole("USER")
+                                .anyRequest().authenticated()
         )
-                .formLogin(login -> login
-                        .loginPage("/login")
-                )
-                .logout(logout -> logout
-                        .logoutSuccessUrl("/")
-                )
-                .csrf(AbstractHttpConfigurer::disable);
-        http.httpBasic(AbstractHttpConfigurer::disable);
+                                .formLogin(login -> login
+                                        .loginPage("/login")
+                                )
+                                .logout(logout -> logout
+                                        .logoutSuccessUrl("/index")
+                                )
+                                .csrf(AbstractHttpConfigurer::disable)
+                                .httpBasic(AbstractHttpConfigurer::disable);
         return http.build();
     }
 }

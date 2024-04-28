@@ -37,6 +37,9 @@ public class UserDetails implements org.springframework.security.core.userdetail
         return user.getName();
     }
 
+    public boolean isSuperUser() {
+        return user.isSuperUser();
+    }
 
     //TODO: Misc, hardcoded for new features
     @Override
