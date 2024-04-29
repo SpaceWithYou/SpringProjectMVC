@@ -14,6 +14,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class User {
+    @Column(unique = true)
     private String name;
 
     private String password;                                                                    //Hashed password

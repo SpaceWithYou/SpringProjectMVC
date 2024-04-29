@@ -2,10 +2,12 @@ package com.example.project.service;
 
 import com.example.project.entity.User;
 import com.example.project.repository.UserRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -15,6 +17,8 @@ public class UserAuthService implements UserDetailsService {
 
     @Autowired
     private UserRepository repo;
+    @Autowired
+    private PasswordEncoder encoder;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -23,8 +27,10 @@ public class UserAuthService implements UserDetailsService {
         return new com.example.project.util.UserDetails(userOpt.get());
     }
 
-    public boolean checkPassword(String userName, String password) throws UsernameNotFoundException {
-        UserDetails details = loadUserByUsername(userName);
-        return password.equals(details.getPassword());
+    /**Adds one admin with hashed password*/
+    @PostConstruct
+    private void addAdmin() {
+        if(repo.findByName("Admin").isEmpty())
+            repo.save(new User("Admin", encoder.encode("AdminPassword"), true));
     }
 }

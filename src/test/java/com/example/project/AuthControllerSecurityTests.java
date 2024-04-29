@@ -15,6 +15,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(properties = {"spring.config.location=classpath:application-test.properties"}, value = AuthController.class)
@@ -65,4 +66,5 @@ public class AuthControllerSecurityTests {
     void checkAdminPageWithAdmin() throws Exception {
         mvc.perform(get("/admin")).andExpect(status().isOk());
     }
+
 }

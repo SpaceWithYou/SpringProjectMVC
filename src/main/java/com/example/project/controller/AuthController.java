@@ -3,6 +3,9 @@ package com.example.project.controller;
 import com.example.project.service.UserAuthService;
 import com.example.project.util.UserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,15 +24,10 @@ public class AuthController {
         ModelAndView mv = new ModelAndView("login");
         try {
             UserDetails details = (UserDetails) service.loadUserByUsername(username);
-            if(service.checkPassword(username, password)) {
-                if(details.isSuperUser()) {
-                    return new ModelAndView("subSuperUserPage");
-                } else {
-                    return new ModelAndView("subUserPage");
-                }
+            if(details.isSuperUser()) {
+                return new ModelAndView("subSuperUserPage");
             } else {
-                mv.addObject("pass", true);
-                return mv;
+                return new ModelAndView("subUserPage");
             }
         } catch (UsernameNotFoundException e) {
             mv.addObject("error", e.getMessage());

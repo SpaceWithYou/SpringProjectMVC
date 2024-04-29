@@ -5,11 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.LinkedList;
 
-@Component
+//@Component
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
@@ -20,9 +19,9 @@ public class UserDetails implements org.springframework.security.core.userdetail
     public Collection<? extends GrantedAuthority> getAuthorities() {
         LinkedList<GrantedAuthority> res = new LinkedList<>();
         if(user.isSuperUser()) {
-            res.add(new SimpleGrantedAuthority("SUPER_USER"));
+            res.add(new SimpleGrantedAuthority("ROLE_SUPER_USER"));
         } else {
-            res.add(new SimpleGrantedAuthority("USER"));
+            res.add(new SimpleGrantedAuthority("ROLE_USER"));
         }
         return res;
     }
