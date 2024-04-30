@@ -1,13 +1,8 @@
 package com.example.project.config;
 
-import com.example.project.entity.User;
-import com.example.project.repository.UserRepository;
 import com.example.project.service.UserAuthService;
-import jakarta.annotation.PostConstruct;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;
