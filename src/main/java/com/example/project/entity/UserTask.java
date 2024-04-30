@@ -60,8 +60,12 @@ public class UserTask {
         this.userId = task.getUserId();
     }
 
-    public void addProblemTask(TaskProblem task) {
-        if(problem.size() < GROUP_MAX_QUESTIONS) this.problem.add(task);
+    public boolean addProblemTask(TaskProblem task) {
+        if(problem.size() < GROUP_MAX_QUESTIONS) {
+            this.problem.add(task);
+            return true;
+        }
+        return false;
     }
 
     public void removeProblemTask(TaskProblem task) {

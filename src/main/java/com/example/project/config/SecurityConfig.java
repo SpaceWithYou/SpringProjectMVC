@@ -15,8 +15,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.session.ChangeSessionIdAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
 
 @Configuration
 @EnableWebSecurity
@@ -51,9 +49,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(custom -> custom
-                                .requestMatchers("/index", "/", "/login", "/login/auth").permitAll()
-                                .requestMatchers("/admin").hasRole("SUPER_USER")
-                                .requestMatchers("/user").hasRole("USER")
+                                .requestMatchers("/index", "/", "/login").permitAll()
+                                .requestMatchers("/admin/**").hasRole("SUPER_USER")
+                                .requestMatchers("/user/**").hasRole("USER")
                                 .anyRequest().authenticated()
         )
                                 .formLogin(login -> login
@@ -64,7 +62,6 @@ public class SecurityConfig {
                                 )
                                 .csrf(AbstractHttpConfigurer::disable)
                                 .httpBasic(AbstractHttpConfigurer::disable);
-        http.setSharedObject(SessionAuthenticationStrategy.class, new ChangeSessionIdAuthenticationStrategy());
         return http.build();
     }
 

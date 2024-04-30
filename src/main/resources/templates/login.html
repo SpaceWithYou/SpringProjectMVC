@@ -8,7 +8,7 @@
 <h1>This is login page</h1>
 <div th:if="${error}">User not found</div>
 <div th:if="${pass}">Invalid password</div>
-<form th:action="@{login/auth}" method="post">
+<form th:action="@{login}" method="post">
     <div>
         <input type="text" name="username" placeholder="Name">
     </div>
