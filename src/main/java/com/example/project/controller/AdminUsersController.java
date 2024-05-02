@@ -45,15 +45,15 @@ public class AdminUsersController {
     }
 
     @PostMapping(path)
-    public String createUser(@ModelAttribute User user) {
-        long id = userRepo.save(user).getId();
+    public String createUser(@RequestBody User user) {
         //encode raw password
         user.setPassword(encoder.encode(user.getPassword()));
+        long id = userRepo.save(user).getId();
         return "UserCreated with id = " + id;
     }
 
     @PutMapping(path + "{id}")
-    public String updateUser(@PathVariable long id, @ModelAttribute User user) {
+    public String updateUser(@PathVariable long id, @RequestBody User user) {
         Optional<User> userOpt = userRepo.findById(id);
         if (userOpt.isEmpty()) return "No user with id = " + id;
         user.setId(userOpt.get().getId());
@@ -65,7 +65,7 @@ public class AdminUsersController {
 
     @DeleteMapping(path + "{id}")
     public String deleteUser(@PathVariable long id, Authentication auth) {
-        UserDetails details = (UserDetails) auth.getDetails();
+        UserDetails details = (UserDetails) auth.getPrincipal();
         //Forbid deleting self
         if(details.getUser().getId() == id) return "Cannot delete this user";
         userRepo.deleteById(id);

@@ -33,13 +33,13 @@ public class AdminTasksController {
     }
 
     @PostMapping(path)
-    public String createTask(@ModelAttribute UserTask task) {
+    public String createTask(@RequestBody UserTask task) {
         service.addUserTask(task, task.getUserId());
         return "Task created";
     }
 
     @PutMapping(path + "{id}")
-    public String updateTask(@PathVariable UUID id, @ModelAttribute UserTask task) {
+    public String updateTask(@PathVariable UUID id, @RequestBody UserTask task) {
         service.updateUserTask(task, id);
         return "Task updated";
     }
