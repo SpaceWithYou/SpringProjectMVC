@@ -23,7 +23,7 @@ public class UserTask {
 
     @Transient private static final int GROUP_MAX_QUESTIONS = 5;
     /**
-     * Group of  questions (max - @see GROUP_MAX_QUESTIONS) <br>
+     * Group of  questions (maximum defines by GROUP_MAX_QUESTIONS) <br>
      * Question with answers and right answers <br>
      * In JSON
      */

@@ -2,15 +2,16 @@ package com.example.project.util;
 
 import com.example.project.entity.User;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.Collection;
 import java.util.LinkedList;
 
-//@Component
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
 public class UserDetails implements org.springframework.security.core.userdetails.UserDetails {
 
     private User user;

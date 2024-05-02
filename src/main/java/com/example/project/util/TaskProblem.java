@@ -1,17 +1,9 @@
 package com.example.project.util;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**Task problem*/
@@ -22,7 +14,8 @@ public class TaskProblem {
 
     private String name;
     /**
-     * Answer map, right answer have true value, otherwise - false
+     * Answer map, right answer have true value, otherwise - false <br>
+     * One answer must be correct
      * */
     private Map<String, Boolean> answerMap;
 
