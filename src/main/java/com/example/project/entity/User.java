@@ -22,7 +22,7 @@ public class User {
     @SequenceGenerator(name = "id_generator", sequenceName = "id_sequence", initialValue = 1, allocationSize = 10)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "id_generator")
     @Column(name = "id", insertable = false, updatable = false)
-    private long id;                                                                            //Ignore in constructor
+    private long id;
 
     private boolean isSuperUser = false;
 

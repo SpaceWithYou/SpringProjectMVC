@@ -7,8 +7,6 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AuthController {
 
-
-    //TODO add all tasks to model
     @GetMapping("/user")
     public ModelAndView userPage() {
         return new ModelAndView("userPage");

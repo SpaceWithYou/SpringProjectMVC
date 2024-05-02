@@ -38,5 +38,4 @@ public class TaskProblem {
     public boolean isRight(String ans) {
         return answerMap.getOrDefault(ans, false);
     }
-
 }

@@ -27,9 +27,9 @@ public class AdminTasksController {
         return service.getAllUserTasks(id);
     }
 
-    @GetMapping(path + "{id}")
-    public Optional<UserTask> getUserTask(@PathVariable UUID id) {
-        return service.getTaskById(id);
+    @GetMapping(path + "{userId}")
+    public Optional<UserTask> getUserTask(@PathVariable UUID userId) {
+        return service.getTaskById(userId);
     }
 
     @PostMapping(path)
