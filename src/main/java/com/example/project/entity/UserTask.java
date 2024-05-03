@@ -17,6 +17,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class UserTask {
+
     private String taskName;
 
     @Id private UUID id = UUID.randomUUID();

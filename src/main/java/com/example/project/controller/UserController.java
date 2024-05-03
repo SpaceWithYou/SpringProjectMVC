@@ -39,12 +39,14 @@ public class UserController {
     }
 
     /**Send answers to problem num of task with id*/
-    @PostMapping("/user/tasks/{id}/{num}")
+    @PostMapping("/user/tasks/{taskId}/{num}")
     @Transactional
     public String sendAnswers(@PathVariable UUID taskId, @PathVariable long num,
-                              @RequestBody List<String> answers) {
+                              @RequestBody List<String> answers, Authentication auth) {
+        //get current id
+        UserDetails details = (UserDetails) auth.getPrincipal();
         //Current Date
-        UserAnswer answer = new UserAnswer(answers, num, taskId, new Date());
+        UserAnswer answer = new UserAnswer(answers, details.getUser().getId(), taskId, new Date());
         //Save in db
         manager.persist(answer);
         return "Answers was sent";

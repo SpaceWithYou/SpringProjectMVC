@@ -48,4 +48,5 @@ public class AdminTasksController {
     public void deleteTask(@PathVariable UUID id) {
         service.deleteUserTask(id);
     }
+
 }
