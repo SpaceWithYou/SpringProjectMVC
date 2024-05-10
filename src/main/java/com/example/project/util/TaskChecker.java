@@ -2,14 +2,15 @@ package com.example.project.util;
 
 import com.example.project.entity.UserTask;
 import com.example.project.repository.UserTaskRepository;
-import com.example.project.service.TaskService;
+import com.example.project.util.TaskProblem;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-/**Checks answers*/
+/**checker service answers*/
 @Component
 @Getter
 @Setter
@@ -37,8 +38,7 @@ public class TaskChecker {
             userAns = (int) map.keySet().stream().filter(map::containsKey)
                     .count();
         }
-        if(rightAns == 0) return -1;
-        return (float) userAns / rightAns;
+        return rightAns == 0 ? -1 : (float) userAns / rightAns;
     }
 
     /**Checks answers for problemNum problem,

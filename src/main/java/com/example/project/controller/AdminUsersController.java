@@ -22,9 +22,9 @@ public class AdminUsersController {
     private PasswordEncoder encoder;
 
     //Path const
-    private static final String path = "/admin/users/";
+    private static final String path = "/admin/users";
 
-    @GetMapping(path + "{id}")
+    @GetMapping(path + "/{id}")
     public String getUser(@PathVariable long id) {
         Optional<User> opt = userRepo.findById(id);
         if(opt.isPresent()) {
@@ -34,11 +34,13 @@ public class AdminUsersController {
     }
 
     @GetMapping(path)
-    public String getAllUser() {
+    public String getAllUsers() {
         Iterator<User> iter = userRepo.findAll().iterator();
         StringBuilder builder = new StringBuilder();
+        //ToDo JSON ignore tasks
         while (iter.hasNext()) {
             builder.append(iter.next());
+            builder.append('\n');
             builder.append('\n');
         }
         return builder.toString();
@@ -52,7 +54,7 @@ public class AdminUsersController {
         return "UserCreated with id = " + id;
     }
 
-    @PutMapping(path + "{id}")
+    @PutMapping(path + "/{id}")
     public String updateUser(@PathVariable long id, @RequestBody User user) {
         Optional<User> userOpt = userRepo.findById(id);
         if (userOpt.isEmpty()) return "No user with id = " + id;
@@ -63,7 +65,7 @@ public class AdminUsersController {
         return user.toString();
     }
 
-    @DeleteMapping(path + "{id}")
+    @DeleteMapping(path + "/{id}")
     public String deleteUser(@PathVariable long id, Authentication auth) {
         UserDetails details = (UserDetails) auth.getPrincipal();
         //Forbid deleting self

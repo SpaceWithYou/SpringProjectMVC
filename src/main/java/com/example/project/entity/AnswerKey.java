@@ -10,4 +10,5 @@ import java.util.UUID;
 public class AnswerKey implements Serializable {
     private long userId;
     private UUID taskId;
+    private int problemNum;
 }

@@ -1,7 +1,9 @@
 package com.example.project.service;
 
 import com.example.project.entity.User;
+import com.example.project.entity.UserAnswer;
 import com.example.project.entity.UserTask;
+import com.example.project.repository.UserAnswerRepository;
 import com.example.project.repository.UserRepository;
 import com.example.project.repository.UserTaskRepository;
 import com.example.project.util.TaskProblem;
@@ -11,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-/**Service for managing tasks*/
+/**Service for managing tasks and answers*/
 @Service
 public class TaskService {
 
@@ -20,6 +22,9 @@ public class TaskService {
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private UserAnswerRepository answerRepo;
 
     public Iterable<UserTask> getAllTasks() {
         return taskRepo.findAll();
@@ -63,6 +68,11 @@ public class TaskService {
         }
         opt.get().getProblem().clear();
         opt.get().getProblem().addAll(newProblems);
+    }
+
+    public List<UserAnswer> getAllUserAnswers(long userId) {
+        return userRepo.existsById(userId) ? answerRepo.getAnswersByUserId(userId) :
+                null;
     }
 
 }

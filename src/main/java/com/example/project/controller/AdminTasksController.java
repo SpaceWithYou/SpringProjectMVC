@@ -13,21 +13,21 @@ import java.util.UUID;
 @Secured("hasRole('SUPER_USER')")
 public class AdminTasksController {
     @Autowired
-    TaskService service;
+    private TaskService service;
 
-    private static final String path = "/admin/tasks/";
+    private static final String path = "/admin/tasks";
 
     @GetMapping(path)
     public Iterable<UserTask> getAllTasks() {
         return service.getAllTasks();
     }
 
-    @GetMapping(path + "{id}")
+    @GetMapping(path + "/{id}")
     public List<UserTask> getAllUserTask(@PathVariable long id) {
         return service.getAllUserTasks(id);
     }
 
-    @GetMapping(path + "{userId}")
+    @GetMapping(path + "/{userId}")
     public Optional<UserTask> getUserTask(@PathVariable UUID userId) {
         return service.getTaskById(userId);
     }
@@ -38,13 +38,13 @@ public class AdminTasksController {
         return "Task created";
     }
 
-    @PutMapping(path + "{id}")
+    @PutMapping(path + "/{id}")
     public String updateTask(@PathVariable UUID id, @RequestBody UserTask task) {
         service.updateUserTask(task, id);
         return "Task updated";
     }
 
-    @DeleteMapping(path + "{id}")
+    @DeleteMapping(path + "/{id}")
     public void deleteTask(@PathVariable UUID id) {
         service.deleteUserTask(id);
     }

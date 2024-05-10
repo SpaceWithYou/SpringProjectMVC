@@ -9,15 +9,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-/**User answers class*/
+/**User answers class for 1 problem task*/
 @Entity
-@Table(
-        name = "answers",
-        indexes = {
-                @Index(name = "answer_user_idx", columnList = "user_id"),
-                @Index(name = "answer_task_idx", columnList = "task_id")
-        }
-)
+@Table(name = "user_answers")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,6 +20,10 @@ public class UserAnswer {
 
     @Column(name = "answers", columnDefinition = "text")
     private List<String> answers;
+
+    @Id
+    @Column(name = "problem_num")
+    private int problemNum = 0;
 
     @Id
     @Column(name = "user_id")
