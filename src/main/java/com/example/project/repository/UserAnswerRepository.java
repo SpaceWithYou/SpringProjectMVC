@@ -6,14 +6,14 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface UserAnswerRepository extends CrudRepository<UserAnswer, AnswerKey> {
 
     //get All user answers
-    //@Query(value = "select * from user_answers ans where ans.user_id = :Id", nativeQuery = true)
-    @Query("ans from user_answers where ans.user_id = :Id")
-    List<UserAnswer> getAnswersByUserId(@Param("Id") long userId);
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Query(value = "select * from user_answers ans where ans.user_id = :Id", nativeQuery = true)
+    Iterable<UserAnswer> findAllUserAnswersByUserId(@Param("Id") long userId);
 }

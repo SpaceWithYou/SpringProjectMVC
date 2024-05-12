@@ -1,5 +1,6 @@
 package com.example.project.service;
 
+import com.example.project.entity.AnswerKey;
 import com.example.project.entity.User;
 import com.example.project.entity.UserAnswer;
 import com.example.project.entity.UserTask;
@@ -9,6 +10,7 @@ import com.example.project.repository.UserTaskRepository;
 import com.example.project.util.TaskProblem;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -70,9 +72,12 @@ public class TaskService {
         opt.get().getProblem().addAll(newProblems);
     }
 
-    public List<UserAnswer> getAllUserAnswers(long userId) {
-        return userRepo.existsById(userId) ? answerRepo.getAnswersByUserId(userId) :
+    public Iterable<UserAnswer> getAllUserAnswers(long userId) {
+        return userRepo.existsById(userId) ? answerRepo.findAllUserAnswersByUserId(userId) :
                 null;
     }
 
+    public UserAnswer saveAnswer(UserAnswer answer) {
+        return answerRepo.save(answer);
+    }
 }

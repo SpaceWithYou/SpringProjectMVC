@@ -2,7 +2,6 @@ package com.example.project.controller;
 
 import com.example.project.entity.UserAnswer;
 import com.example.project.entity.UserTask;
-import com.example.project.repository.UserAnswerRepository;
 import com.example.project.service.TaskCheckerService;
 import com.example.project.service.TaskService;
 import com.example.project.util.UserDetails;
@@ -10,13 +9,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyEmitter;
 
-import java.util.Date;
+import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
+import java.util.stream.Collectors;
 
 //ToDo add cache
 @RestController
@@ -25,9 +27,6 @@ public class UserController {
 
     @Autowired
     private TaskService service;
-
-    @Autowired
-    private UserAnswerRepository answerRepo;
 
     @Autowired
     private TaskCheckerService checkerService;
@@ -52,9 +51,9 @@ public class UserController {
         //get current id
         UserDetails details = (UserDetails) auth.getPrincipal();
         //Current Date
-        UserAnswer answer = new UserAnswer(answers, num, details.getUser().getId(), taskId, new Date());
+        UserAnswer answer = new UserAnswer(answers, num, details.getUser().getId(), taskId, LocalDateTime.now());
         //Save in db
-        answerRepo.save(answer);
+        service.saveAnswer(answer);
         return "Answers was sent";
     }
 
@@ -65,10 +64,11 @@ public class UserController {
         //get current id
         UserDetails details = (UserDetails) auth.getPrincipal();
         int counter = 0;
+        LocalDateTime date = LocalDateTime.now();
         for (List<String> problemAnswer: answers) {
-            UserAnswer answer = new UserAnswer(problemAnswer, counter, details.getUser().getId(), taskId, new Date());
+            UserAnswer answer = new UserAnswer(problemAnswer, counter, details.getUser().getId(), taskId, date);
             //Save in db
-            answerRepo.save(answer);
+            service.saveAnswer(answer);
             counter++;
         }
         return "All answers was sent";
@@ -78,42 +78,42 @@ public class UserController {
     @GetMapping("/user/history")
     public String getAnswers(Authentication auth) {
         UserDetails details = (UserDetails) auth.getPrincipal();
-        List<UserAnswer> answerList = service.getAllUserAnswers(details.getUser().getId());
+        Iterable<UserAnswer> answerList = service.getAllUserAnswers(details.getUser().getId());
         if(answerList == null) return "null";
         StringBuilder builder = new StringBuilder();
+        //TODO add task id
         for (UserAnswer answer : answerList) {
             builder.append('[');
-            for(String ans : answer.getAnswers()) {
-                builder.append(ans);
-                builder.append(", ");
-            }
+            builder.append(answer.getAnswers()
+                    .stream().
+                    collect(Collectors.
+                            joining(", ")));
             builder.append("]\n");
         }
         return builder.toString();
     }
 
     /**Async process user marks*/
-    //@Async
     @GetMapping("/user/marks")
-    public CompletableFuture<String> getMarks(Authentication auth) {
+    public ResponseBodyEmitter getMarks(Authentication auth) throws IOException {
         UserDetails details = (UserDetails) auth.getPrincipal();
+        ResponseBodyEmitter emitter = new ResponseBodyEmitter();
         long userId = details.getUser().getId();
-        List<Future<Float>> futures = checkerService.checkUserTasks(userId, service.getAllUserAnswers(userId));
-        if(futures.isEmpty()) return CompletableFuture.supplyAsync(() -> "No data");
-        CompletableFuture<String> res = CompletableFuture.supplyAsync(() -> {
-            StringBuilder b = new StringBuilder();
-            for (var task: futures) {
-                if(task.isDone()) {
-                    try {
-                        b.append(task.get());
-                        b.append('\n');
-                    } catch (Exception e) {
-                        continue;
-                    }
-                }
+        Iterable<UserAnswer> answers = service.getAllUserAnswers(userId);
+        //create answer list
+        List<UserAnswer> answerList =  new ArrayList<>();
+        answers.forEach(answerList::add);
+        try {
+            checkerService.checkUserTasks(answerList);
+            List<Float> marks = checkerService.getTasksResult(emitter);
+            //return completed tasks in stream
+            if(marks.isEmpty()) {
+                emitter.send("No data");
             }
-            return b.toString();
-        });
-        return res;
+            emitter.complete();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return emitter;
     }
 }

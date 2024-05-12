@@ -11,6 +11,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class UserAuthService implements UserDetailsService {
@@ -30,7 +31,12 @@ public class UserAuthService implements UserDetailsService {
     /**Adds one admin with hashed password*/
     @PostConstruct
     private void addAdmin() {
-        if(repo.findByName("Admin").isEmpty())
-            repo.save(new User("Admin", encoder.encode("AdminPassword"), true));
+        if(repo.findByName("Admin").isEmpty()) {
+            String rawPassword = UUID.randomUUID().toString();
+            System.out.println("Raw password:");
+            System.out.println(rawPassword);
+            System.out.println();
+            repo.save(new User("Admin", encoder.encode(rawPassword), true));
+        };
     }
 }

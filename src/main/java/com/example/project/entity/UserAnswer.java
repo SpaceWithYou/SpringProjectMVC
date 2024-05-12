@@ -1,11 +1,12 @@
 package com.example.project.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,12 +14,19 @@ import java.util.UUID;
 @Entity
 @Table(name = "user_answers")
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @IdClass(AnswerKey.class)
 public class UserAnswer {
 
-    @Column(name = "answers", columnDefinition = "text")
+    @ElementCollection
+    @CollectionTable(name = "answers",
+            joinColumns = {
+                    @JoinColumn(name = "problem_num",referencedColumnName = "problem_num"),
+                    @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
+                    @JoinColumn(name = "task_id", referencedColumnName = "task_id")
+            })
+    @Column(name = "answer")
     private List<String> answers;
 
     @Id
@@ -34,5 +42,5 @@ public class UserAnswer {
     private UUID taskId;
 
     @Column(name = "time")
-    private Date date;
+    private LocalDateTime date;
 }
